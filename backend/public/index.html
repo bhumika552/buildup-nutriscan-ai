@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buildup AI</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="card">
+        <div class="hero-panel">
+          <div>
+            <p class="eyebrow">Buildup AI</p>
+            <h1>Smart food analysis in one upload</h1>
+            <p class="hero-copy">
+              Drag a food photo, choose an image, and see the detected item plus
+              estimated calories instantly.
+            </p>
+          </div>
+          <div class="tag">AI-powered</div>
+        </div>
+
+        <div class="upload-panel">
+          <div class="goal-panel">
+            <label class="goal-label" for="goal-select">Your goal</label>
+            <select id="goal-select" class="goal-select" name="goal">
+              <option value="maintenance">Maintenance</option>
+              <option value="weight_loss">Weight loss</option>
+              <option value="weight_gain">Weight gain</option>
+              <option value="muscle_build">Muscle build</option>
+            </select>
+          
+            <label class="goal-label" for="diet-select">Diet preference</label>
+            <select id="diet-select" class="goal-select" name="diet">
+              <option value="any">Any</option>
+              <option value="veg">Vegetarian</option>
+              <option value="nonveg">Non-vegetarian</option>
+            </select>
+
+            <label class="goal-label" for="cuisine-select">Cuisine focus</label>
+            <select id="cuisine-select" class="goal-select" name="cuisine">
+              <option value="global">Global</option>
+              <option value="indian">Indian</option>
+            </select>
+          </div>
+
+          <label id="drop-area" class="drop-area" for="image-input" tabindex="0">
+            <span class="drop-heading">Drag & drop an image</span>
+            <span class="drop-subtitle">or click to browse</span>
+            <span class="drop-hint">JPEG, PNG, GIF · max 10 MB</span>
+            <input id="image-input" name="image" type="file" accept="image/*" />
+          </label>
+
+          <div id="preview" class="preview hidden">
+            <img id="preview-image" alt="Selected preview" />
+            <div class="preview-meta">
+              <div>
+                <div class="preview-name" id="preview-name"></div>
+                <div class="preview-size" id="preview-size"></div>
+              </div>
+              <button type="button" id="remove-file" class="text-button">Remove</button>
+            </div>
+          </div>
+
+          <button id="submit-btn" class="primary-btn" disabled>Analyze now</button>
+        </div>
+
+        <div id="status" class="status hidden"></div>
+
+        <div id="result-card" class="result-card hidden">
+          <div class="result-header">
+            <div>
+              <p class="result-label">Analysis result</p>
+              <h2>Food detected</h2>
+            </div>
+          </div>
+
+          <div class="result-grid">
+            <div class="result-item">
+              <span class="result-key">Food</span>
+              <strong id="result-food">--</strong>
+            </div>
+            <div class="result-item">
+              <span class="result-key">Calories</span>
+              <strong id="result-calories">--</strong>
+            </div>
+          </div>
+        </div>
+
+        <p class="note">
+          Tip: Make sure the backend server is running on port 5001 and the AI service is running on port 8000.
+        </p>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

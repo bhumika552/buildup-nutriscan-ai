@@ -1,5 +1,5 @@
 {
-  "name": "nutriscan-backend",
+  "name": "buildup-ai-backend",
   "version": "1.0.0",
   "description": "NutriScan backend API",
   "main": "server.js",

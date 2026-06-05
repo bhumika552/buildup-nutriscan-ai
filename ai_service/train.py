@@ -41,4 +41,4 @@ model.fit(train_data, epochs=5)
 # save model
 model.save("model.h5")
 
-print("Model trained and saved as model.h5 ✅")
+print("Model trained and saved as model.h5 ")
