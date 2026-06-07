@@ -1,6 +1,7 @@
 const axios = require("axios");
 const FormData = require("form-data");
 const fs = require("fs");
+const Scan = require("../models/Scan");
 
 const AI_SERVICE_URL = process.env.AI_SERVICE_URL || "http://127.0.0.1:8000/predict";
 const nutrition = {
@@ -103,6 +104,15 @@ exports.analyzeFood = async (req, res) => {
   const formData = new FormData();
   formData.append("file", fs.createReadStream(req.file.path));
 
+  // Prepare base64 preview of image for MongoDB history
+  let previewBase64 = null;
+  try {
+    const fileBuffer = fs.readFileSync(req.file.path);
+    previewBase64 = `data:image/jpeg;base64,${fileBuffer.toString("base64")}`;
+  } catch (err) {
+    console.error("Error generating base64 preview:", err.message);
+  }
+
   try {
     const response = await axios.post(
       AI_SERVICE_URL,
@@ -110,20 +120,47 @@ exports.analyzeFood = async (req, res) => {
       { headers: formData.getHeaders() }
     );
 
-    const food = response.data.food;
-    const calories = nutrition[food] || 150;
-    const description = foodDescriptions[food] || "a tasty choice";
+    // Extract values returned from AI service (FastAPI which integrates Gemini)
+    const food_name = response.data.food_name || response.data.food || "Unknown Dish";
+    const confidence = response.data.confidence || 0.92;
+    const nutritionInfo = response.data.nutrition || {
+      calories: response.data.calories || nutrition[food_name.toLowerCase()] || 250,
+      protein: response.data.protein || 12,
+      carbs: response.data.carbs || 30,
+      fat: response.data.fat || 10,
+      fiber: response.data.fiber || 3
+    };
+
+    const description = foodDescriptions[food_name.toLowerCase()] || response.data.description || `A nutritious serving of ${food_name}`;
     const advice = goalAdvice[goal];
     let recommendations = (cuisine === 'indian') ? (goalRecommendationsIndian[goal] || goalRecommendationsIndian.maintenance) : (goalRecommendations[goal] || goalRecommendations.maintenance);
     recommendations = filterByDiet(recommendations, diet);
 
-    res.json({
-      food,
+    const result = {
+      food_name,
+      confidence,
+      nutrition: nutritionInfo,
       description,
-      calories,
       goalAdvice: advice,
       recommendations
-    });
+    };
+
+    // Save to MongoDB if user is authenticated
+    if (req.user) {
+      try {
+        await Scan.create({
+          userId: req.user._id,
+          food_name,
+          confidence,
+          nutrition: nutritionInfo,
+          preview: previewBase64
+        });
+      } catch (dbErr) {
+        console.error("Error saving scan history to MongoDB:", dbErr.message);
+      }
+    }
+
+    res.json(result);
   } catch (error) {
     console.error("Food analysis failed:", error.message || error);
     if (error.response) {
@@ -134,5 +171,31 @@ exports.analyzeFood = async (req, res) => {
     res.status(500).json({ error: "Error processing image" });
   } finally {
     fs.unlink(req.file.path, () => {});
+  }
+};
+
+// @desc    Get user's scan history from MongoDB
+// @route   GET /api/scans
+// @access  Private
+exports.getScans = async (req, res) => {
+  try {
+    const scans = await Scan.find({ userId: req.user._id }).sort({ date: -1 });
+    res.json(scans);
+  } catch (err) {
+    console.error("GetScans error:", err.message);
+    res.status(500).json({ error: "Server error fetching history" });
+  }
+};
+
+// @desc    Clear user's scan history in MongoDB
+// @route   DELETE /api/scans
+// @access  Private
+exports.deleteScans = async (req, res) => {
+  try {
+    await Scan.deleteMany({ userId: req.user._id });
+    res.json({ message: "History cleared successfully" });
+  } catch (err) {
+    console.error("DeleteScans error:", err.message);
+    res.status(500).json({ error: "Server error clearing history" });
   }
 };

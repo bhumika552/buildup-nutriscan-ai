@@ -1,0 +1,311 @@
+@import "tailwindcss";
+
+/* ─── Design Tokens ─────────────────────────────────────────────
+   Palette derived from the cinematic food video:
+   - Jet black background (near-black with warm brown undertone)
+   - Warm amber/orange as primary accent (hot food tones)
+   - Off-white cream for text (warm, not harsh white)
+   - Muted terracotta reds and golden yellows as secondaries
+─────────────────────────────────────────────────────────────── */
+@theme {
+  --color-primary:    #E07840;
+  --color-bg:         #080604;
+  --color-surface:    #0e0a06;
+  --color-border:     rgba(255,160,80,0.07);
+  --color-text:       #FFF5EB;
+  --color-muted:      rgba(255,245,235,0.4);
+  --color-success:    #7AAF5A;
+  --color-danger:     #D94530;
+  --color-warning:    #D4A04A;
+}
+
+/* ─── Font Variables ─────────────────────────────────────────── */
+:root {
+  --fd: 'Barlow Condensed', sans-serif;
+  --fb: 'Barlow', sans-serif;
+  --fm: 'Space Mono', monospace;
+
+  /* Warm cinematic palette from video */
+  --black:   #080604;          /* near-black, warm brown undertone */
+  --white:   #FFF5EB;          /* warm cream */
+  --accent:  #E07840;          /* amber-orange — hot food / fire */
+  --accent2: #D4A04A;          /* golden amber */
+  --deep:    #6B3820;          /* deep terracotta */
+  --red:     #D94530;          /* tomato red */
+}
+
+/* ─── Reset ──────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--fb);
+  font-size: 16px;
+  background: var(--black);
+  color: var(--white);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Noise Overlay ──────────────────────────────────────────── */
+.noise-overlay {
+  position: fixed; inset: 0; z-index: 2;
+  pointer-events: none; opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 150px;
+  animation: noise-anim 0.15s steps(3) infinite;
+}
+@keyframes noise-anim {
+  0%   { transform: translate(0); }
+  33%  { transform: translate(-2px, 1px); }
+  66%  { transform: translate(1px, -2px); }
+  100% { transform: translate(-1px, 2px); }
+}
+
+/* ─── Custom Cursor ──────────────────────────────────────────── */
+#ns-cursor {
+  position: fixed; top: 0; left: 0;
+  width: 12px; height: 12px;
+  background: var(--accent);
+  border-radius: 50%; pointer-events: none;
+  z-index: 9999; transform: translate(-50%, -50%);
+  transition: width 0.2s, height 0.2s;
+  mix-blend-mode: difference;
+}
+#ns-cursor.big {
+  width: 48px; height: 48px;
+  background: transparent;
+  border: 1.5px solid var(--accent);
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: rgba(255,160,80,0.2); }
+
+/* ─── Typography ─────────────────────────────────────────────── */
+.hero-title {
+  font-family: var(--fd);
+  font-weight: 900;
+  font-size: clamp(4.5rem, 11vw, 11rem);
+  line-height: 0.88;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+.sec-title {
+  font-family: var(--fd);
+  font-weight: 900;
+  font-size: clamp(3rem, 6vw, 6rem);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 0.92;
+}
+.label-text {
+  font-family: var(--fm);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,245,235,0.32);
+}
+
+/* ─── Keyframe Animations ────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes scan {
+  0%   { top: -2%; }
+  50%  { top: 92%; }
+  100% { top: -2%; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-12px); }
+}
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(224,120,64,0.3), 0 4px 24px rgba(0,0,0,0.4); }
+  50%       { box-shadow: 0 0 40px rgba(224,120,64,0.55), 0 0 80px rgba(224,120,64,0.18), 0 4px 24px rgba(0,0,0,0.4); }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes dot-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.7); }
+}
+
+/* ─── Accent glow text ───────────────────────────────────────── */
+.accent-glow {
+  color: var(--accent);
+  text-shadow: 0 0 30px rgba(224,120,64,0.45), 0 0 60px rgba(224,120,64,0.15);
+}
+
+/* ─── Scanning line ──────────────────────────────────────────── */
+.scan-line {
+  position: absolute; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  animation: scan 2.2s ease-in-out infinite;
+  box-shadow: 0 0 16px rgba(224,120,64,0.7);
+}
+
+/* ─── Nutrition bar track ────────────────────────────────────── */
+.nutrition-bar-track {
+  background: rgba(255,160,80,0.07);
+  border-radius: 999px; height: 6px; overflow: hidden;
+}
+
+/* ─── Utilities ──────────────────────────────────────────────── */
+.float-animation { animation: float 5s ease-in-out infinite; }
+.glow-pulse      { animation: glow-pulse 3s ease-in-out infinite; }
+.dot-pulse       { animation: dot-pulse 2s ease infinite; }
+
+/* ─── Gradient text ──────────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #E07840 0%, #D4A04A 60%, #E07840 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Step number watermark ──────────────────────────────────── */
+.step-num-bg {
+  font-family: var(--fd);
+  font-size: 8rem; font-weight: 900;
+  color: rgba(224,120,64,0.04);
+  position: absolute; top: -1rem; right: -1rem;
+  line-height: 1;
+  user-select: none; pointer-events: none;
+}
+
+/* ─── Glass surface ──────────────────────────────────────────── */
+.glass-surface {
+  background: rgba(224,120,64,0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,160,80,0.08);
+}
+
+/* ─── PRIMARY CTA Button (amber-orange) ──────────────────────── */
+.accent-btn {
+  font-family: var(--fd);
+  font-size: 1.15rem; font-weight: 900;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  background: var(--accent);
+  color: #1a0800;
+  padding: 1.1rem 2.8rem;
+  border: none; cursor: pointer; border-radius: 4px;
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  transition: box-shadow 0.3s, transform 0.2s, background 0.2s;
+}
+.accent-btn:hover {
+  background: #ea8850;
+  box-shadow: 0 0 30px rgba(224,120,64,0.5), 0 0 60px rgba(224,120,64,0.18);
+}
+
+/* ─── Outline Button ─────────────────────────────────────────── */
+.outline-btn {
+  font-family: var(--fd);
+  font-size: 1.15rem; font-weight: 900;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--white); background: transparent;
+  padding: 1.1rem 2.8rem;
+  border: 1px solid rgba(255,245,235,0.18); cursor: pointer;
+  border-radius: 4px;
+  transition: border-color 0.3s, color 0.3s;
+}
+.outline-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ─── Stat Card ──────────────────────────────────────────────── */
+.stat-card {
+  border: 1px solid rgba(255,160,80,0.07);
+  background: rgba(255,160,80,0.02);
+  padding: 2.5rem 2rem; position: relative; overflow: hidden;
+  transition: border-color 0.3s, background 0.3s;
+}
+.stat-card:hover {
+  border-color: rgba(255,160,80,0.18);
+  background: rgba(255,160,80,0.04);
+}
+.stat-card::before {
+  content: ''; position: absolute;
+  bottom: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.stat-card:hover::before { opacity: 1; }
+
+.stat-value {
+  font-family: var(--fd);
+  font-weight: 900; font-size: 3.5rem;
+  line-height: 1; text-transform: uppercase;
+  color: var(--accent);
+  text-shadow: 0 0 24px rgba(224,120,64,0.3);
+  margin-bottom: 0.5rem;
+}
+
+/* ─── Step Card ──────────────────────────────────────────────── */
+.step-card {
+  border: 1px solid rgba(255,160,80,0.07);
+  background: rgba(255,160,80,0.02);
+  padding: 2.5rem; position: relative; overflow: hidden;
+  transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+}
+.step-card:hover {
+  border-color: rgba(255,160,80,0.18);
+  background: rgba(255,160,80,0.04);
+  box-shadow: 0 0 40px rgba(120,60,20,0.08), inset 0 0 30px rgba(255,160,80,0.02);
+}
+.step-card::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.step-card:hover::before { opacity: 1; }
+
+/* ─── Testimonial Card ───────────────────────────────────────── */
+.testi-card {
+  border: 1px solid rgba(255,160,80,0.07);
+  background: rgba(255,160,80,0.02);
+  padding: 2rem;
+  transition: border-color 0.3s, background 0.3s;
+  display: flex; flex-direction: column;
+}
+.testi-card:hover {
+  border-color: rgba(255,160,80,0.16);
+  background: rgba(255,160,80,0.035);
+}
+
+/* ─── Nav ────────────────────────────────────────────────────── */
+.glass-nav {
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  background: rgba(8,6,4,0.9);
+  border-bottom: 1px solid rgba(255,160,80,0.07);
+}
+
+/* ─── Upload zone ────────────────────────────────────────────── */
+.upload-zone {
+  border: 2px dashed rgba(255,160,80,0.18);
+  border-radius: 12px;
+  background: rgba(255,160,80,0.02);
+  transition: border-color 0.3s, background 0.3s, transform 0.3s;
+  cursor: pointer;
+}
+.upload-zone:hover, .upload-zone.drag-over {
+  border-color: var(--accent);
+  background: rgba(255,160,80,0.05);
+}
+
+/* ─── Focus rings ────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ─── Card hover ─────────────────────────────────────────────── */
+.card-hover { transition: transform 0.25s ease, border-color 0.25s ease; }
+.card-hover:hover { transform: translateY(-4px); border-color: rgba(255,160,80,0.25) !important; }

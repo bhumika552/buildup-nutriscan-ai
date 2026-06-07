@@ -2,12 +2,15 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 
-const { analyzeFood } = require("../controllers/foodController");
+const { analyzeFood, getScans, deleteScans } = require("../controllers/foodController");
+const { protect, optionalAuth } = require("../middleware/authMiddleware");
 
 // file upload setup
 const upload = multer({ dest: "uploads/" });
 
-// route
-router.post("/analyze", upload.single("image"), analyzeFood);
+// routes
+router.post("/analyze", optionalAuth, upload.single("image"), analyzeFood);
+router.get("/scans", protect, getScans);
+router.delete("/scans", protect, deleteScans);
 
-module.exports = router;
+module.exports = router;
