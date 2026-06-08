@@ -3,7 +3,7 @@ import axios from 'axios'
 
 const AuthContext = createContext(null)
 
-const API_AUTH_URL = 'http://localhost:5000/api/auth'
+const API_AUTH_URL = 'http://localhost:5001/api/auth'
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)

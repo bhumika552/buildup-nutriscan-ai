@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 import axios from 'axios'
 
-const API_URL = 'http://localhost:5000/api/analyze'
+const API_URL = 'http://localhost:5001/api/analyze'
 
 // Mock data for demo mode when backend is offline
 const MOCK_RESULTS = [

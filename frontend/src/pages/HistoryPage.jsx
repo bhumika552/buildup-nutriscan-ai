@@ -40,7 +40,7 @@ export default function HistoryPage() {
       if (!isAuthenticated) return
       setHistoryLoading(true)
       try {
-        const response = await axios.get('http://localhost:5000/api/scans')
+        const response = await axios.get('http://localhost:5001/api/scans')
         setDbHistory(response.data)
       } catch (err) {
         console.error('Error fetching database history:', err.message)
@@ -58,7 +58,7 @@ export default function HistoryPage() {
   const handleClear = async () => {
     if (isAuthenticated) {
       try {
-        await axios.delete('http://localhost:5000/api/scans')
+        await axios.delete('http://localhost:5001/api/scans')
         setDbHistory([])
         setShowClearConfirm(false)
         setSelectedItem(null)
